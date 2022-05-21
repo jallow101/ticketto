@@ -1,0 +1,36 @@
+.sides{
+    display: flex;
+}
+.filter_side{
+    margin: 20px;
+    width: 20.99%;
+    background-color: #c4c5bf;
+    box-shadow: rgb(34 84 133 / 37%) 0px 2px 7px 1px;
+}
+.filter_side:hover{
+    box-shadow:none;
+    cursor: pointer;
+}
+input{
+    width: 41px;
+    /* border: none; */
+    border-radius: 6px;
+}
+.center{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.category_types{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+.types{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+}

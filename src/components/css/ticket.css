@@ -1,0 +1,144 @@
+.search_side {
+  margin: 20px;
+  width: 99.99vw;
+  height: auto;
+  background-color: ghostwhite;
+  border-radius: 10px;
+}
+
+.search_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search_ticket {
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+  border: 1px solid #dfe1e5;
+  box-shadow: none;
+  border-radius: 14px;
+  z-index: 3;
+  height: 44px;
+  /* margin: 0 auto; */
+  width: 50%;
+  /* width: 400px; */
+}
+.search_ticket:hover {
+  box-shadow: rgb(34 84 133 / 37%) 0px 2px 7px 1px;
+}
+.search_ticket > input {
+  border: none;
+  outline: none;
+  width: 100%;
+  text-align: left;
+  font-size: 20px;
+  margin-left: 21px;
+}
+
+.search_icon {
+  width: 60px;
+  height: 46px;
+  border-radius: 11px;
+  border: navajowhite;
+  cursor: pointer;
+}
+
+.filter_icon {
+  width: 80px;
+  height: 46px;
+  margin-left: 20px;
+  border-radius: 11px;
+  border: navajowhite;
+  cursor: pointer;
+}
+
+.ticket_list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.ticket {
+  width: 25%;
+  margin: 40px;
+  background-color: whitesmoke;
+  cursor: pointer;
+  transition: all 3.4ms;
+  
+}
+
+.ticket:hover {
+  border-radius: 15px;
+  box-shadow: rgb(34 84 133 / 67%) 0px 2px 7px 1px;
+}
+.ticket_button {
+  width: 100%;
+  height: 37px;
+  cursor: pointer;
+  background-color: lightslategrey;
+  color: white;
+  outline: none;
+  border: none;
+  font-weight: 500;
+  border-radius: 0.2vw;
+}
+.ticket_button:hover {
+  color: black;
+  background-color: white;
+  transition: all 0.3s;
+  font-weight: 900;
+}
+
+.description {
+  display: none;
+}
+.ticket:hover > .description {
+  display: block;
+  animation: hideDesc 3.4s ease forwards;
+}
+
+.ticket_title {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.ticket_image {
+  width: 100%;
+  height: 200px;
+  transition: all 1.2s;
+}
+.ticket_image:hover {
+  transform: scale(1.06);
+}
+
+.ticket_price {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 21px 0 0px;
+}
+
+.ticket_price_label {
+  font-size: 14px;
+  font-weight: 300;
+  margin: 9px 0 -16px;
+}
+
+.ticket_venue {
+  margin: 13px 0px 20px;
+}
+
+@keyframes hideDesc {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

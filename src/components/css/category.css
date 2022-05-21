@@ -1,0 +1,40 @@
+.category_title{
+    font-family: fangsong;
+    font-size: 20px;
+}
+
+.categories{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    font-family: fangsong;
+    font-size: 20px;
+    padding-bottom: 30PX;
+}
+
+.category_item{
+    margin-top:10px;
+    max-height: 292px;
+    width: 25.33%;
+    height: 300px;
+    background-color: white;
+    border-radius: 30px;
+    border-radius: 30px;
+    /* https://myticket.kenzap.com/wp-content/uploads/2017/06/Cliburn-Stage-1_Rodger-Mallison.Van-Cliburn-Foundation-390x280.jpg */
+    /* https://images.pexels.com/photos/788824/pexels-photo-788824.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 */
+    background-image: url(https://images.pexels.com/photos/788824/pexels-photo-788824.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940);
+    color: white;
+    background-repeat: no-repeat;
+    object-fit: cover;
+    background-size: cover;
+}
+
+.category_item:hover{
+    box-shadow: 10px 10px 10px #dbdbdb78;
+    cursor: pointer;
+    background: wheat;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: 500;
+    font-size: larger;
+}
