@@ -16,6 +16,8 @@ import ConcertForm from "./components/Overview/ConcertForm";
 import Overview from "./components/Overview/Overview";
 import Footer from "./pages/Landing/Footer";
 import Home from "./pages/Landing/Home";
+import TicketList  from "./pages/Purchase/TicketList";
+import TicketDetails from "./pages/Purchase/TicketDetails";
 
 function App() {
   return (
@@ -62,6 +64,17 @@ function App() {
             <Header />
             <Profile />
           </Route>
+          
+          <Route exact path="/tickets">
+            <Header />
+            <TicketList />
+          </Route>
+
+          <Route exact path="/tickets/tickinfo">
+            <Header />
+            <TicketDetails />
+          </Route>
+
 
           <Route exact path="/search">
             <Header />
