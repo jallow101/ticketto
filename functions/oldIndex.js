@@ -2,82 +2,51 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
-var QRCode = require("qrcode");
-require('dotenv').config("./.env")
-
 var CryptoJS = require("crypto-js");
 
-console.log(" Env Variables", process.env)
+var QRCode = require("qrcode");
 
+const OAuth2 = google.auth.OAuth2;
 admin.initializeApp();
 const firestore = admin.firestore();
-const OAuth2 = google.auth.OAuth2;
 
-// var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
-// 	oauth2Client.credentials = {
-// 	                refresh_token: process.env.REACT_APP_REFRESH_TOKEN
-// 	};
-// 	oauth2Client.refreshAccessToken(function(err, tokens){
-// 	console.log(tokens)
-// 	oauth2Client.credentials = {access_token : tokens.access_token}
-// 	callback(oauth2Client);
+let private_key = process.env.ENCRYPTION_KEY;
+
+/**
+ * Here we're using Gmail to send
+ */
+
+let qr_image;
 
 const oauth2Client = new OAuth2(
-  process.env.REACT_APP_CLIENT_ID,
-  process.env.REACT_APP_CLIENT_SECRET,
-  process.env.REACT_APP_REDIRECT_URI
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET
 );
-
 oauth2Client.setCredentials({
-  refresh_token: process.env.REACT_APP_REFRESH_TOKEN
+  refresh_token: process.env.REFRESH_TOKEN,
 });
-// oauth2Client.getAccessToken()
-
-const accessToken = new Promise((resolve, reject) => {
-  oauth2Client.getAccessToken((err, token) => {
-    if (err) reject(err);
-    resolve(token);
-  });
-});
-
-
+const accessToken = oauth2Client.getAccessToken();
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
   auth: {
     type: "OAuth2",
-    user: "ebrimajallow20@gmail.com",
-    pass: 'lsrceapfklqiupsm',
-    clientId: process.env.REACT_APP_CLIENT_ID,
-    clientSecret: process.env.REACT_APP_CLIENT_SECRET,
-    refreshToken: process.env.REACT_APP_REFRESH_TOKEN,
+    user: "ticketooleh@gmail.com",
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    refreshToken: process.env.REFRESH_TOKEN,
     accessToken: accessToken,
-  }
+    tls: {
+      rejectUnauthorized: false,
+    },
+  },
 });
 
-// let transporter = nodemailer.createTransport({
-//   host: "smtp.gmail.com",
-//   port: 465,
-//   secure: true,
-//   auth: {
-//     type: "OAuth2",
-//     user: "ticketooleh@gmail.com",
-//   },
-// });
+let ran = Math.random().toString(36).slice(-5);
+let ranNo = Math.random().toString(36);
 
-// transporter.set("oauth2_provision_cb", (user, renew, callback) => {
-//   let accessToken = userTokens[user];
-//   if (!accessToken) {
-//     return callback(new Error("Unknown user"));
-//   } else {
-//     return callback(null, accessToken);
-//   }
-// });
-
-
+let emailContent;
+let img;
 
 exports.TicketReceipt = functions.firestore
   .document("events/{eventId}/vendors/{vendorId}/tickets/{ticketId}")
@@ -92,10 +61,12 @@ exports.TicketReceipt = functions.firestore
     let email = clientInfo.email;
     let uuid = clientInfo.uid;
     let ticketPrice = clientInfo.price;
-    //let ticketType = clientInfo.ticket_type;
+    let ticketType = clientInfo.ticket_type;
 
     //Create a unique encrypted qr code
+
     // Encrypt
+
     //get the name, timestamp, event, price and email on the ticket and encrypt it.
     //seperate the fields by comma.
     let encryptItems =
@@ -111,12 +82,11 @@ exports.TicketReceipt = functions.firestore
       " ," +
       email;
     //eg Musa Faal, 9298338292912,popcaan,1000,uuid,mfaal@gmail.com
-    let private_key = process.env.REACT_APP_ENCRYPTION_KEY;
-    let ciphertext = CryptoJS.AES.encrypt(encryptItems, private_key).toString();
+    var ciphertext = CryptoJS.AES.encrypt(encryptItems, private_key).toString();
 
     // Decrypt
-    let bytes = CryptoJS.AES.decrypt(ciphertext, private_key);
-    let originalText = bytes.toString(CryptoJS.enc.Utf8);
+    var bytes = CryptoJS.AES.decrypt(ciphertext, private_key);
+    var originalText = bytes.toString(CryptoJS.enc.Utf8);
 
     // console.log(originalText); // 'my message'
     functions.logger.info(originalText, { structuredData: true });
@@ -124,9 +94,10 @@ exports.TicketReceipt = functions.firestore
     const eventId = context.params.eventId;
     const vendorId = context.params.vendorId;
     const ticketId = context.params.ticketId;
+
     const getQr = async () => {
-      // const ticketQRInfo = `${clientName}-${ranNo}-${eventName}-${ran}-${email}-${ran}`;
-      img = await QRCode.toDataURL(ciphertext);
+      const ticketQRInfo = `${clientName}-${ranNo}-${eventName}-${ran}-${email}-${ran}`;
+      img = await QRCode.toDataURL(ticketQRInfo);
       // console.log("QR code generated...");
       emailContent = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
        <html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
@@ -318,7 +289,7 @@ exports.TicketReceipt = functions.firestore
                  <td style="padding:0px;margin:0px;border-spacing:0;"><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="5e509ed0-7244-4fdd-b920-d33b474ee08f" data-mc-module-version="2019-10-22">
            <tbody>
              <tr>
-               <td style="padding:18px 0px 18px 0px; line-height:17px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit"><span style="font-family: &quot;courier new&quot;, courier, monospace">Order No: ${uuid}</span></div>
+               <td style="padding:18px 0px 18px 0px; line-height:17px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit"><span style="font-family: &quot;courier new&quot;, courier, monospace">Order No: 7-${ran}-2</span></div>
        <div style="font-family: inherit; text-align: inherit"><br></div>
        <div style="font-family: inherit; text-align: inherit"><span style="font-family: &quot;courier new&quot;, courier, monospace">Payment Method: </span><span style="font-family: &quot;courier new&quot;, courier, monospace"><em>Paypal</em></span></div><div></div></div></td>
              </tr>
@@ -404,31 +375,22 @@ exports.TicketReceipt = functions.firestore
       });
     };
 
+    //sendEmail();
     // Get a reference to the restaurant
-    // let referencePath =
-    //   "events/" + eventId + "/vendors/" + vendorId + "/tickets" + ticketId;
-    firestore
-      .collection("events")
-      .doc(eventId)
-      .collection("vendors")
-      .doc(vendorId)
-      .collection("tickets")
-      .doc(ticketId)
+    let referencePath = "events/"+eventId+"/vendors/"+vendorId+"/tickets"+ticketId;
+    const adminRef = firestore.collection(referencePath)
+     
+    // console.log("Query Docuemnt ", adminRef);
+
+   return adminRef
       .update({
-        qrcode: ciphertext,
+        qrcode: ciphertext
       })
       .then(() => {
-        console.log(
-          "Document successfully updated!,  Decrtped code will is below _____------"
-        );
-        console.log(originalText); // 'my message'
-
-        sendEmail();
+        console.log("Document successfully updated!");
       })
       .catch((error) => {
         // The document probably doesn't exist.
         console.error("Error updating document: ", error);
       });
-
-    // console.log("Query Docuemnt ", adminRef);
   });

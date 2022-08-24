@@ -3,6 +3,7 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useStateValue } from "../../StateProvider";
 import { doc,collection, setDoc, serverTimestamp  } from "firebase/firestore";
 import db  from "../../firebase";
+import { v4 as uuidv4 } from 'uuid';
 
 const TicketInfo = ({
   event,
@@ -17,6 +18,7 @@ const TicketInfo = ({
   const [owner, setOwner] = useState("");
 
   const Count = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const uid = uuidv4();
 
   const updateTickets = (e) => {
     setQty(e.target.value);
@@ -224,6 +226,7 @@ const TicketInfo = ({
                           location: event.location,
                           event_name: event.name,
                           fullname: fullname,
+                          uid:uid,
                         }
 
                         setDoc(docRef, userTicket).then((data) => {

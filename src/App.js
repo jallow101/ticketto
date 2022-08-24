@@ -70,7 +70,7 @@ function App() {
             <TicketList />
           </Route>
 
-          <Route exact path="/tickets/tickinfo">
+          <Route exact path="/tickets/tickinfo/:ticketId">
             <Header />
             <TicketDetails />
           </Route>

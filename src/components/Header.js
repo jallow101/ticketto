@@ -50,9 +50,11 @@ const Header = () => {
                 {authUser.displayName}
               </span>
 
+              <Link to="/tickets">
               <span className="group hover:text-green  cursor-pointer hover:bg-yellow-500 px-5 py-1 rounded">
                 Tickets
               </span>
+              </Link>
               <br></br>
              </div>
              
