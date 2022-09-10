@@ -1,31 +1,55 @@
-import React, { useState,useEffect } from "react";
-import { doc, getDocs,collectionGroup,query, where, limit,orderBy } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import { useStateValue } from "../../StateProvider";
+import {
+  doc,
+  getDocs,
+  collection,
+  collectionGroup,
+  query,
+  where,
+  limit,
+  orderBy,
+} from "firebase/firestore";
 import { Link, useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import db  from "../../firebase";
+import db from "../../firebase";
 
 const TicketList = () => {
-
   const [tickets, setTickets] = useState([]);
+  const [{ authUser }, dispatch] = useStateValue();
+  const userEmail = authUser.email;
 
   useEffect(() => {
     //OmfcBwkBEfNIFqRElY2Z
     const getTickets = async () => {
-      const museums = query(collectionGroup(db, 'tickets', where('email', '==', 'ebrimajallow20@gmail.com')));
-      const querySnapshot =  await getDocs(museums);
+      const q = query(collectionGroup(db, "tickets"), where("email", "==", userEmail));
 
-      console.log("Here are the docs ", querySnapshot);
-      setTickets(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-    
+      const querySnapshot = await getDocs(q);
+      setTickets(
+          querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+      );
+
+      // const museums = query(
+      //   collectionGroup(
+      //     db,
+      //     "tickets",
+      //     where("email", "==", "halifafaye73@gmail.com")
+      //   )
+      // );
+      // const querySnapshot = await getDocs(museums);
+
+      // console.log("Here are the docs ", querySnapshot);
+      // setTickets(
+      //   querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+      // );
+
       // querySnapshot.forEach((doc) => {
       //     console.log(doc.id, ' => ', doc.data());
       //     // setTickets(doc.data())
       // });
-      
     };
 
     getTickets();
   }, []);
-
 
   const [upcoming, setUpcoming] = useState(true);
   const history = useHistory();

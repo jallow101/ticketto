@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { Link } from "react-router-dom";
 import { useStateValue } from "../../StateProvider";
-import { doc,collection, setDoc, serverTimestamp  } from "firebase/firestore";
-import db  from "../../firebase";
-import { v4 as uuidv4 } from 'uuid';
+import { doc, collection, setDoc, serverTimestamp } from "firebase/firestore";
+import db from "../../firebase";
+import { v4 as uuidv4 } from "uuid";
 
 const TicketInfo = ({
   event,
@@ -168,17 +169,18 @@ const TicketInfo = ({
               : "cursor-not-allowed w-full rounded bg-indigo-500 shadow-lg shadow-indigo-500/50 p-2 text-white"
           }
         >
-          Pay <span className="font-semibold text-red-600">D {quantity * price}</span>
+          Pay{" "}
+          <span className="font-semibold text-red-600">
+            D {quantity * price}
+          </span>
           <span className="text-white-500">
             {price <= 1 ? (
               <div className="text-red-600">Select Ticket Type</div>
-            ) 
-            
-            :
-            authUser == "" ? (
-              <div className="fon-bold text-yellow-500">Sign In Required</div>
-            ):
-            (
+            ) : authUser == "" ? (
+              <Link to="/login">
+                <div className="fon-bold text-yellow-500">Sign In Required</div>
+              </Link>
+            ) : (
               <PayPalScriptProvider
                 key={price * quantity}
                 options={{
@@ -208,14 +210,16 @@ const TicketInfo = ({
                         const email = details.payer.email_address;
                         const authEmail = authUser.email;
                         const fullname = authUser.displayName;
-
-                      
-
                         //update firestore db when payemnt successful
 
                         // Add a new document with a generated id.
-                        const docRef = doc(collection( db, `events/${eventId}/vendors/webVendor/tickets`));
-                        let userTicket =  {
+                        const docRef = doc(
+                          collection(
+                            db,
+                            `events/${eventId}/vendors/webVendor/tickets`
+                          )
+                        );
+                        let userTicket = {
                           email: authEmail,
                           paypal_email: email,
                           ticket_type: "Single Entrance",
@@ -226,22 +230,17 @@ const TicketInfo = ({
                           location: event.location,
                           event_name: event.name,
                           fullname: fullname,
-                          uid:uid,
-                        }
+                          uid: uid,
+                        };
 
                         setDoc(docRef, userTicket).then((data) => {
-                         
                           // alert(
                           //   `Transaction completed by ${name}, send recipt to ${email}`
                           // );
-                          openModal()
+                          openModal();
                           console.log("Document written with ID: ", docRef.id);
-                          console.log("Data Sent ",data)
+                          console.log("Data Sent ", data);
                         });
-                       
-
-                       
-
                       });
                     }}
                   />
