@@ -97,15 +97,17 @@ const TicketInfo = ({
         </span>
         <div className="mt-2 flex justify-evenly">
           {event.ticket_types.map((ticket) => (
+            
             <label className="inline-flex items-center">
               <input
                 type="radio"
-                className="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300  dark:ring-offset-gray-800  dark:bg-gray-700 dark:border-gray-600 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                 name="ticketType"
                 value={ticket.price}
                 onClick={selectTicket}
               />
-              <span className="font-bold">{ticket.name}</span>
+              <span className="font-bold cursor-pointer">{ticket.name}</span>
             </label>
           ))}
         </div>
