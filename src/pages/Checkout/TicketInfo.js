@@ -97,11 +97,9 @@ const TicketInfo = ({
         </span>
         <div className="mt-2 flex justify-evenly">
           {event.ticket_types.map((ticket) => (
-            
             <label className="inline-flex items-center">
               <input
                 type="radio"
-                
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300  dark:ring-offset-gray-800  dark:bg-gray-700 dark:border-gray-600 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                 name="ticketType"
                 value={ticket.price}
@@ -243,6 +241,51 @@ const TicketInfo = ({
                           console.log("Document written with ID: ", docRef.id);
                           console.log("Data Sent ", data);
                         });
+
+                        //send notification
+
+                        fetch(
+                          "https://graph.facebook.com/v14.0/104136509119354/messages",
+                          {
+                            method: "POST",
+                            headers: {
+                              "Authorization":
+                              "Bearer EAASXpVzwADgBAFxDZCF8SDcZAZCHMAd5NHXLU6zp0ohtVEgTfhZBSab92ozzSB0xvDFPXOIFz9vzkoYYbrPE2Jjyk6BZA2JvbHCPTVldgJjmA9QGj3MKvV5VjH4peW6ZCEmxZCCQd2JKNTFysEv2DKkWa3MocRy72Lm4dmxMhD6gCEbwY3IZBjVXZBP0MVzwTcEa7hIHZCQ58y2AZDZD",
+                              "Accept": "application/json",
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                              messaging_product: "whatsapp",
+                              to: "2203537339",
+                              type: "template",
+                              template: {
+                                name: "alert",
+                                language: {
+                                  code: "en",
+                                },
+
+                                components: [
+                                  {
+                                    type: "body",
+                                    parameters: [
+                                      {
+                                        type: "text",
+                                        text: fullname,
+                                      },
+                                      {
+                                        type: "text",
+                                        text: event.name,
+                                      },
+                                    ],
+                                  },
+                                ],
+                              },
+                            }),
+                          }
+                        ).then((response) => response.json()).catch((err) => {
+                          // An unexpected error occurred which was not 400 nor while parsing the response header
+                          console.log("Whatsapp fetch error -",err);
+                      });
                       });
                     }}
                   />
